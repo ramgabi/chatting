@@ -19,7 +19,7 @@
 
 <body>
     <div id='chatLog'></div>
-    <form action="http://localhost:3000/send" method="GET">
+    <form action="/send" method="GET">
         name <input id='name' type="text" name='name'>
         whisperTo <input type="text" name='whisperTo'>
         txt <input type="text" name='message'>
@@ -30,7 +30,7 @@
         var chatLog = document.getElementById('chatLog');
         var name = null;
         var sz = 0;
-        var URL = 'http://localhost:3000/chatLogCheck/';
+        var URL = '/chatLogCheck/';
         setInterval(function () {
             name = $('#name').val();
             $.get(URL + sz + '/' + name, function (data, status) {
