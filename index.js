@@ -40,6 +40,7 @@ router.route('/userRegister').get((req, res) => {
 router.route('/send').get((req, res) => {
     // console.log(req.query.whisperTo);
     messages.push({ 'name': req.query.name, 'message': req.query.message, 'whisperTo': req.query.whisperTo });
+    res.end();
 });
 router.route('/chatLogCheck/:sz/:name').get((req, res) => {
     var name = req.params.name;
