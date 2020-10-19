@@ -3,12 +3,17 @@ const static = require('serve-static');
 const express = require('express');
 const router = express.Router();
 const app = express();
+const path = require('path');
 const cors = require('cors');
 
 app.use('/', static(__dirname + '/html/'));
 app.set('port', process.env.PORT || 3000);
 // app.set(process.env.PORT);
 app.use(cors());
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/html/chat.html'));
+})
 
 // chat messages, log-in & out logs
 // friend list, group list, room list
