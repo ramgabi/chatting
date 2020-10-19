@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div#chatLog {
+            border: 1px solid orange;
+            width: 300px;
+            height: 300px;
+            overflow: scroll;
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <!-- <script src="../js/jquery.min.js"></script> -->
+</head>
+
+<body>
+    <div id='chatLog'></div>
+    <form action="http://localhost:3000/send" method="GET">
+        name <input id='name' type="text" name='name'>
+        whisperTo <input type="text" name='whisperTo'>
+        txt <input type="text" name='message'>
+        <input type="submit" value='SEND'>
+    </form>
+
+    <script>
+        var chatLog = document.getElementById('chatLog');
+        var name = null;
+        var sz = 0;
+        var URL = 'http://localhost:3000/chatLogCheck/';
+        setInterval(function () {
+            name = $('#name').val();
+            $.get(URL + sz + '/' + name, function (data, status) {
+                if (data != '' && status == 'success') {
+                    var res = JSON.parse(data);
+                    sz = parseInt(res.size);
+                    for (var msg of res.messages) {
+                        chatLog.innerHTML += '<p>' + msg.name + ': ' + msg.message + '</p>';
+                    }
+                }
+            })
+        }, 1000);
+    </script>
+</body>
+
+</html>
