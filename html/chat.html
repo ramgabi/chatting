@@ -18,6 +18,11 @@
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script> -->
     <!-- <script src="../js/jquery.min.js"></script> -->
     <script src='/socket.io/socket.io.js'></script>
+    <script>
+        window.onload = function () {
+
+        }
+    </script>
 </head>
 
 <body>
@@ -35,15 +40,16 @@
     </div>
 
     <script>
-        var name; var txt; var socket = io();
-        var chatLogBox = document.getElementById('chatLog')
+        var socket = io();
         var nameBox = document.getElementById('name');
         var txtBox = document.getElementById('txt');
+        var chatLogBox = document.getElementById('chatLog')
         var sendBtn = document.getElementById('sendBtn');
-        sendBtn.addEventListener('onclick', (e) => {
+        sendBtn.addEventListener('click', (e) => {
+
             console.log('send btn pressed');
-            name = nameBox.innerText
-            txt = txtBox.innerText
+            name = nameBox.value
+            txt = txtBox.value
 
             sendMessage();
         })
@@ -57,7 +63,9 @@
             socket.emit('chat', chatMessage);
         }
         socket.on('chat', function (msg) {
-            chatLogBox.innerHTML += 'name: ' + msg.name + ' >> ' + msg.txt;
+            var temp = document.createElement('p');
+            temp.innerText = + msg.name + ': ' + msg.txt;
+            chatLogBox.appendChild(temp);
         })
         // var name = null;
         // var sz = 0;

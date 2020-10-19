@@ -79,9 +79,10 @@ server.listen(app.get('port'), () => {
 var io = socketio.listen(server);
 io.on('connection', (socket) => {
     console.log('a user connected');
-    console.log('socket: ', socket);
+    // console.log('socket: ', socket);
     socket.on('chat', (msg) => {
         messages.push({ 'name': msg.name, 'message': msg.txt });
+        console.log(messages)
         io.emit('chat', msg);
     })
     socket.on('disconnect', () => {
