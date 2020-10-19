@@ -8,8 +8,7 @@ const path = require('path');
 
 app.use('/', static(__dirname + '/html/'));
 app.set('port', process.env.PORT || 3000);
-// app.set(process.env.PORT);
-app.use(cors());
+// app.use(cors());
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/html/chat.html'));
