@@ -79,6 +79,7 @@ server.listen(app.get('port'), () => {
 var io = socketio.listen(server);
 io.on('connection', (socket) => {
     console.log('a user connected');
+    io.emit('enter');
     // console.log('socket: ', socket);
     socket.on('chat', (msg) => {
         messages.push({ 'name': msg.name, 'message': msg.txt });
@@ -87,6 +88,7 @@ io.on('connection', (socket) => {
     })
     socket.on('disconnect', () => {
         console.log('this user disconnected');
+        io.emit('leave');
     })
 })
 console.log("socket.io ready...");

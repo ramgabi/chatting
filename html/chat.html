@@ -64,7 +64,17 @@
         }
         socket.on('chat', function (msg) {
             var temp = document.createElement('p');
-            temp.innerText = + msg.name + ': ' + msg.txt;
+            temp.innerText = msg.name + ': ' + msg.txt;
+            chatLogBox.appendChild(temp);
+        })
+        socket.on('enter', () => {
+            var temp = document.createElement('p');
+            temp.innerText = 'A user entered'
+            chatLogBox.appendChild(temp);
+        })
+        socket.on('leave', () => {
+            var temp = document.createElement('p');
+            temp.innerText = 'A user left'
             chatLogBox.appendChild(temp);
         })
         // var name = null;
