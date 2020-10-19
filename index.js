@@ -1,17 +1,22 @@
 const http = require('http');
 const static = require('serve-static');
 const express = require('express');
+// important: this [cors] must come before Router
+const cors = require('cors');
 const router = express.Router();
 const app = express();
-const path = require('path');
-// const cors = require('cors');
+var socketio = require('socket.io')
+// const path = require('path');
+
+
 
 app.use('/', static(__dirname + '/html/'));
 app.set('port', process.env.PORT || 3000);
-// app.use(cors());
+app.use(cors());
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/html/chat.html'));
+    // res.sendFile(path.join(__dirname + '/html/chat.html'));
+    res.sendFile(__dirname + '/html/chat.html');
 })
 
 // chat messages, log-in & out logs
@@ -68,4 +73,19 @@ app.use('/', router);
 const server = http.createServer(app);
 server.listen(app.get('port'), () => {
     console.log('http://localhost:%d', app.get('port'));
+
+    // database.init(app,config);
 });
+var io = socketio.listen(server);
+io.on('connection', (socket) => {
+    console.log('a user connected');
+    console.log('socket: ', socket);
+    socket.on('chat', (msg) => {
+        messages.push({ 'name': msg.name, 'message': msg.txt });
+        io.emit('chat', msg);
+    })
+    socket.on('disconnect', () => {
+        console.log('this user disconnected');
+    })
+})
+console.log("socket.io ready...");
