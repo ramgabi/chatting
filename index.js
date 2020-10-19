@@ -45,16 +45,19 @@ router.route('/chatLogCheck/:sz/:name').get((req, res) => {
     var name = req.params.name;
     var sz = parseInt(req.params.sz);
     var l = messages.length;
+    var data = '';
     if (l == 0 || l <= sz) res.end();
     else {
         var slicedMessages = messages.slice(sz);
         var filteredMessages = slicedMessages.filter(function (msg) {
             return (msg.whisperTo == '' || msg.whisperTo == name)
         })
-        var data = {
-            'size': l,
-            'messages': filteredMessages,
-        };
+        if (filteredMessages.length != 0) {
+            data = {
+                'size': l,
+                'messages': filteredMessages,
+            };
+        }
         res.end(JSON.stringify(data));
     }
 });
