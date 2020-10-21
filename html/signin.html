@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>signin</title>
     <style></style>
+    <!-- <script src='/socket.io/socket.io.js'></script> -->
     <script>
-        window.onload = function () { }
+        window.onload = function () {
+        }
     </script>
 </head>
 
 <body>
-    <form id="signin" action="/room/list" method="post">
-        ID<input class="pInfo" name="ID" type="text">
-        PW<input class="pInfo" name="PW" type="password">
-        Nick<input class="pInfo" name="Nick" type="text">
-        <button type="submit">Sign In</button>
+    <form id="signin" action="/profile/signin" method="post">
+        ID<input name="pID" type="text">
+        PW<input name="pPW" type="password">
+        Nick<input name="pNick" type="text">
+        <button id="signinBtn" type="submit">Sign In</button>
     </form>
 </body>
 

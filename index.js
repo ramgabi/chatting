@@ -1,6 +1,8 @@
+const url = require('url');
 const http = require('http');
 const static = require('serve-static');
 const express = require('express');
+const bodyParser = require('body-parser')
 // important: this [cors] must come before Router
 const cors = require('cors');
 const router = express.Router();
@@ -9,8 +11,13 @@ var socketio = require('socket.io')
 // const path = require('path');
 
 // app.use('/', static(__dirname + '/html/'));
+app.use('/', static(__dirname + '/html'));
 app.set('port', process.env.PORT || 3000);
 app.use(cors());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json())
 
 app.get('/', function (req, res) {
     // res.sendFile(path.join(__dirname + '/html/chat.html'));
@@ -23,41 +30,77 @@ app.get('/', function (req, res) {
 
 
 var profiles = {};
-var rooms = {};
-// var userGroups = {};
-var messages = [];
-var chatLogs = {};
+var rooms = [
+    {
+        roomID: 1,
+        roomPW: null,
+        roomTitle: '조용한 방',
+        roomCapacity: 8,
+        roomOwner: '홍길동'
+    },
+    {
+        roomID: 2,
+        roomPW: null,
+        roomTitle: '시끄러운 방',
+        roomCapacity: 20,
+        roomOwner: '시끌이'
+    },
+    {
+        roomID: 3,
+        roomPW: null,
+        roomTitle: '말많은 방',
+        roomCapacity: 5,
+        roomOwner: '수다쟁이'
+    }
+]
 
-router.route('/room/list').post((req, res) => {
+var chatLogs = {};
+var messages = [];
+
+router.route('/profile/signin').post((req, res) => {
 
     var authenticated = false;
 
     // later, need a fix to actually authenticate the user
-    var userKey = req.body.ID;
-    var user = {
-        ID: req.body.ID,
-        PW: req.body.PW,
-        Nick: req.body.Nick
+    var userKey = req.body.pID;
+    // var user = {
+    //     pID: req.body.pID,
+    //     pPW: req.body.pPW,
+    //     pNick: req.body.pNick
+    // }
+    var user = req.body;
+    if (user.pID != null) {
+        if (profiles.length == 0 || !profiles.hasOwnProperty(userKey)) {
+            user.pGroup = null;
+            user.pRoomID = null;
+            profiles[userKey] = user;
+        }
+        // console.log('profiles', profiles)
+        // dot뒤의 문자는 문자열로 받아들여진다(변수명 사용불가)
+        if (profiles[userKey].pPW == user.pPW) authenticated = true;
     }
-    if (user.ID != null) {
-        if (profiles.length == 0 || !profiles.includes(userKey)) profiles[userKey] = user;
-        if (profiles.userKey.PW == user.PW) authenticated = true;
+    if (authenticated === true) {
+        res.redirect(url.format({
+            pathname: '/roomlist.html',
+            query: user
+        }))
     }
-    if (authenticated === true) res.redirect('/html/roomlist.html');
-    else res.redirect('/html/signin.html');
+    else res.redirect('/signin.html');
 });
 
 router.route('/room/list').get((req, res) => {
-    var group = req.query.group;
-    var name = req.query.name;
-    var level = req.query.level;
-    users.push({ 'name': name, 'level': level, 'group': group });
-    if (group in userGroups) {
-        userGroups[group].push(name);
-    } else {
-        userGroups[group] = [name];
-    }
+    res.end(JSON.stringify({ rooms: rooms }));
 });
+
+router.route('/room/join/:roomID/:pID').get((req, res) => {
+    var selectedRoomID = req.params.roomID;
+    var pID = req.params.pID;
+
+    // personal socket
+    // 접속하는 순간부터 소켓으로 모든 이벤트 관리해야할듯...?
+
+    res.redirect('/chat.html');
+})
 
 // router.route('')
 
@@ -110,4 +153,3 @@ io.on('connection', (socket) => {
         io.emit('leave');
     })
 })
-console.log("socket.io ready...");
