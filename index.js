@@ -8,15 +8,13 @@ const app = express();
 var socketio = require('socket.io')
 // const path = require('path');
 
-
-
-app.use('/', static(__dirname + '/html/'));
+// app.use('/', static(__dirname + '/html/'));
 app.set('port', process.env.PORT || 3000);
 app.use(cors());
 
 app.get('/', function (req, res) {
     // res.sendFile(path.join(__dirname + '/html/chat.html'));
-    res.sendFile(__dirname + '/html/chat.html');
+    res.sendFile(__dirname + '/html/signin.html');
 })
 
 // chat messages, log-in & out logs
@@ -24,21 +22,42 @@ app.get('/', function (req, res) {
 // person info (id,chat_room_id, room, group, level )
 
 
-var users = [];
-var userGroups = {};
+var profiles = {};
+var rooms = {};
+// var userGroups = {};
 var messages = [];
+var chatLogs = {};
 
-// router.route('/userRegister').get((req, res) => {
-//     var group = req.query.group;
-//     var name = req.query.name;
-//     var level = req.query.level;
-//     users.push({ 'name': name, 'level': level, 'group': group });
-//     if (group in userGroups) {
-//         userGroups[group].push(name);
-//     } else {
-//         userGroups[group] = [name];
-//     }
-// });
+router.route('/room/list').post((req, res) => {
+
+    var authenticated = false;
+
+    // later, need a fix to actually authenticate the user
+    var userKey = req.body.ID;
+    var user = {
+        ID: req.body.ID,
+        PW: req.body.PW,
+        Nick: req.body.Nick
+    }
+    if (user.ID != null) {
+        if (profiles.length == 0 || !profiles.includes(userKey)) profiles[userKey] = user;
+        if (profiles.userKey.PW == user.PW) authenticated = true;
+    }
+    if (authenticated === true) res.redirect('/html/roomlist.html');
+    else res.redirect('/html/signin.html');
+});
+
+router.route('/room/list').get((req, res) => {
+    var group = req.query.group;
+    var name = req.query.name;
+    var level = req.query.level;
+    users.push({ 'name': name, 'level': level, 'group': group });
+    if (group in userGroups) {
+        userGroups[group].push(name);
+    } else {
+        userGroups[group] = [name];
+    }
+});
 
 // router.route('')
 
